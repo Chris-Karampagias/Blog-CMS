@@ -23,9 +23,11 @@ export default function LoginForm() {
         throw new Error(result.error);
       }
       toast.success("Login success");
+      const token = result.token;
+      localStorage.setItem("token", JSON.stringify(token));
       context.dispatch({
         type: "LOGIN",
-        payload: user,
+        payload: true,
       });
       setTimeout(() => router.push("/dashboard"), 500);
     } catch (err) {

@@ -14,8 +14,8 @@ export default function Logout() {
       toast.success("Logout succesful");
       context.dispatch({
         type: "LOGOUT",
-        user: null,
       });
+      localStorage.clear();
       setTimeout(() => router.push("/"), 500);
     } catch (err) {
       toast.error(err.message);
