@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useContext } from "react";
+import { AuthContext } from "@/utils/AuthContextProvider";
+import { useRouter } from "next/navigation";
 export default function LoginForm() {
+  const router = useRouter();
   const [user, setUser] = useState({ username: "", password: "" });
-
+  const context = useContext(AuthContext);
   const submitData = async () => {
     try {
       const res = await fetch("http://localhost:4000/api/login", {
@@ -19,6 +23,11 @@ export default function LoginForm() {
         throw new Error(result.error);
       }
       toast.success("Login success");
+      context.dispatch({
+        type: "LOGIN",
+        payload: user,
+      });
+      setTimeout(() => router.push("/dashboard"), 500);
     } catch (err) {
       toast.error(err.message);
     }
@@ -35,7 +44,18 @@ export default function LoginForm() {
       <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
           <div className="modal-action justify-center">
-            <div className="flex flex-col gap-5">
+            <form
+              className="flex flex-col gap-5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (user.username === "" || user.password === "") {
+                  return;
+                }
+                submitData();
+                document.getElementById("my_modal_1").close();
+                setUser({ username: "", password: "" });
+              }}
+            >
               <div>
                 <input
                   type="text"
@@ -65,14 +85,7 @@ export default function LoginForm() {
                 <label htmlFor="password"></label>
               </div>
               <div className="w-full flex justify-center gap-10">
-                <button
-                  className="btn"
-                  onClick={() => {
-                    submitData();
-                    document.getElementById("my_modal_1").close();
-                    setUser({ username: "", password: "" });
-                  }}
-                >
+                <button className="btn" type="submit">
                   Login
                 </button>
                 <button
@@ -86,7 +99,7 @@ export default function LoginForm() {
                   Close
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </dialog>

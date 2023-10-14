@@ -1,5 +1,12 @@
+"use client";
 import LoginForm from "./LoginForm";
-export default function Navbar({ loggedIn }) {
+import Logout from "./Logout";
+import { useContext } from "react";
+import { AuthContext } from "@/utils/AuthContextProvider";
+
+export default function Navbar() {
+  const context = useContext(AuthContext);
+
   return (
     <div className="navbar w-[98%] mx-auto mt-2 shadow-md shadow-slate-400 rounded-xl  bg-primary">
       <div className="flex-1">
@@ -7,7 +14,7 @@ export default function Navbar({ loggedIn }) {
           Blog CMS
         </h1>
       </div>
-      {!loggedIn ? <LoginForm /> : <h1>Hello, admin!</h1>}
+      {!context.user ? <LoginForm /> : <Logout />}
     </div>
   );
 }
