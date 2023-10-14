@@ -8,18 +8,13 @@ import toast from "react-hot-toast";
 export default function Logout() {
   const router = useRouter();
   const context = useContext(AuthContext);
-  const logout = async () => {
-    try {
-      await fetch("http://localhost:4000/api/logout");
-      toast.success("Logout succesful");
-      context.dispatch({
-        type: "LOGOUT",
-      });
-      localStorage.clear();
-      setTimeout(() => router.push("/"), 500);
-    } catch (err) {
-      toast.error(err.message);
-    }
+  const logout = () => {
+    toast.success("Logout succesful");
+    context.dispatch({
+      type: "LOGOUT",
+    });
+    localStorage.clear();
+    setTimeout(() => router.push("/"), 500);
   };
   return (
     <button
