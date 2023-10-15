@@ -14,7 +14,7 @@ export default function Logout() {
       type: "LOGOUT",
     });
     localStorage.clear();
-    setTimeout(() => router.push("/"), 500);
+    router.push("/");
   };
   return (
     <button

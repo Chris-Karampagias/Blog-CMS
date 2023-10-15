@@ -29,7 +29,7 @@ export default function LoginForm() {
         type: "LOGIN",
         payload: true,
       });
-      setTimeout(() => router.push("/dashboard"), 500);
+      router.push("dashboard/");
     } catch (err) {
       toast.error(err.message);
     }
