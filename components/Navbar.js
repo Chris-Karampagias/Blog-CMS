@@ -12,7 +12,7 @@ export default function Navbar() {
     <div className="navbar w-[98%] mx-auto mt-2 shadow-md shadow-slate-400 rounded-xl  bg-primary">
       <div className="flex-1">
         <Link
-          href={context.user ? "dashboard" : "/"}
+          href={context.user ? ".." : "/"}
           className="btn btn-ghost text-white text-3xl normal-case"
         >
           Blog CMS
