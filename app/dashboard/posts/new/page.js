@@ -50,7 +50,7 @@ export default function NewPost() {
         });
       } else {
         toast.success("Post creation succesful");
-        setTimeout(() => router.push("/dashboard"), 1000);
+        setTimeout(() => router.push("/dashboard/posts"), 1000);
       }
     } catch (err) {
       toast.error(err.message);

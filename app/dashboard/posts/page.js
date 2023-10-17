@@ -34,7 +34,6 @@ export default function Posts() {
           "Content-Type": "application/json",
         },
       });
-      console.log(res);
       const postData = await res.json();
       if (!res.ok) {
         throw new Error(postData.error);
@@ -42,7 +41,6 @@ export default function Posts() {
 
       setPosts(postData);
     } catch (error) {
-      console.log(error);
       toast.error(error.message);
       setLoading(false);
     } finally {
@@ -53,7 +51,6 @@ export default function Posts() {
   useEffect(() => {
     getData();
   }, []);
-  console.log(posts);
   return (
     <>
       {" "}
@@ -64,55 +61,53 @@ export default function Posts() {
         <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-auto justify-items-center gap-10 mt-10 p-10 min-h-screen">
           {posts.map((post) => {
             return (
-              <>
-                <div
-                  key={post._id}
-                  className="card max-w-[600px] lg:aspect-square bg-base-100 shadow-2xl"
-                >
-                  <figure>
-                    <Image
-                      src={"http://localhost:4000/" + post.image}
-                      width={600}
-                      height={600}
-                      alt="Post image"
-                    />
-                  </figure>
-                  <div className="card-body justify-between  p-5 md:p-10 space-y-5">
-                    <div>
-                      <h2 className="card-title self-center md:self-start text-2xl md:text-3xl">
-                        {post.title}
-                      </h2>
-                      <p className="text-slate-500 mt-3 lg:text-xl">
-                        <span className="font-bold">Posted: </span>
-                        {formatDate(post.postedAt)}
-                      </p>
-                      <p className="text-slate-500 mt-3 lg:text-xl">
-                        <span className="font-bold">Last edit: </span>
-                        {formatDate(post.updatedAt)}
-                      </p>
-                    </div>
-                    <div className="card-actions justify-center gap-5 md:justify-end">
-                      <Link
-                        href={"/dashboard/posts/" + post._id}
-                        className="btn btn-secondary btn-md xl:btn-lg"
-                      >
-                        Edit
-                      </Link>
-                      <Link
-                        href={"/dashboard/posts/" + post._id}
-                        className="btn btn-error bg-red-500 btn-md xl:btn-lg"
-                      >
-                        Delete
-                      </Link>
-                    </div>
+              <div
+                key={post._id}
+                className="card max-w-[600px] lg:aspect-square bg-base-100 shadow-2xl"
+              >
+                <figure>
+                  <Image
+                    src={"http://localhost:4000/" + post.image}
+                    width={600}
+                    height={600}
+                    alt="Post image"
+                  />
+                </figure>
+                <div className="card-body justify-between  p-5 md:p-10 space-y-5">
+                  <div>
+                    <h2 className="card-title self-center md:self-start text-2xl md:text-3xl">
+                      {post.title}
+                    </h2>
+                    <p className="text-slate-500 mt-3 lg:text-xl">
+                      <span className="font-bold">Posted: </span>
+                      {formatDate(post.postedAt)}
+                    </p>
+                    <p className="text-slate-500 mt-3 lg:text-xl">
+                      <span className="font-bold">Last edit: </span>
+                      {formatDate(post.updatedAt)}
+                    </p>
+                  </div>
+                  <div className="card-actions justify-center gap-5 md:justify-end">
+                    <Link
+                      href={"/dashboard/posts/" + post._id}
+                      className="btn btn-secondary btn-md xl:btn-lg"
+                    >
+                      Edit
+                    </Link>
+                    <Link
+                      href={"/dashboard/posts/" + post._id}
+                      className="btn btn-error bg-red-500 btn-md xl:btn-lg"
+                    >
+                      Delete
+                    </Link>
                   </div>
                 </div>
-                <Toaster position="bottom-right" />
-              </>
+              </div>
             );
           })}
         </div>
       )}
+      <Toaster position="bottom-right" />
     </>
   );
 }
