@@ -17,7 +17,7 @@ export default function Page() {
   return (
     <>
       {context.user && (
-        <div className="flex flex-col relative scroll-dis items-center">
+        <div className="flex flex-col relative items-center">
           <div className="flex flex-col min-h-screen items-center gap-10 mt-10">
             <div className="card w-full bg-base-100 shadow-2xl">
               <Icon path={mdiWrenchCog} size={4} className="self-center" />

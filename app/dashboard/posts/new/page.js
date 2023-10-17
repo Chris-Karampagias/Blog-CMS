@@ -3,7 +3,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { AuthContext } from "@/utils/AuthContextProvider";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 export default function NewPost() {
   const [post, setPost] = useState({ title: "", description: "", image: "" });
@@ -54,8 +54,6 @@ export default function NewPost() {
       }
     } catch (err) {
       toast.error(err.message);
-    } finally {
-      setTimeout(() => setLoading(false), 1000);
     }
   };
 
@@ -64,7 +62,9 @@ export default function NewPost() {
       {context.user && (
         <div className="card w-4/5 xl:w-1/3 mx-auto h-1/3 my-10 bg-base-100 shadow-2xl">
           <div className="card-body p-4">
-            <h1 className="text-3xl text-center my-5">Create a new post</h1>
+            <h1 className="text-3xl text-center my-5 border-b-[1px] border-slate-200">
+              Post details
+            </h1>
             <form
               id="post-form"
               enctype="multipart/form-data"
@@ -148,7 +148,6 @@ export default function NewPost() {
               </button>
             </form>
           </div>
-          <Toaster position="bottom-right" />
         </div>
       )}
     </>

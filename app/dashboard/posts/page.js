@@ -4,7 +4,7 @@ import { AuthContext } from "@/utils/AuthContextProvider";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { DateTime } from "luxon";
 
 export default function Posts() {
@@ -36,6 +36,7 @@ export default function Posts() {
       });
       const postData = await res.json();
       if (!res.ok) {
+        setLoading(false);
         throw new Error(postData.error);
       }
 
@@ -58,7 +59,7 @@ export default function Posts() {
         <span className="loading loading-spinner absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] loading-lg "></span>
       )}
       {context.user && !loading && (
-        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-auto justify-items-center gap-10 mt-10 p-10 min-h-screen">
+        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 min-[2500px]:grid-cols-3 justify-items-center gap-10 gap-y-28  mt-10 p-10 min-h-screen">
           {posts.map((post) => {
             return (
               <div
@@ -89,13 +90,13 @@ export default function Posts() {
                   </div>
                   <div className="card-actions justify-center gap-5 md:justify-end">
                     <Link
-                      href={"/dashboard/posts/" + post._id}
+                      href={"/dashboard/posts/update/" + post._id}
                       className="btn btn-secondary btn-md xl:btn-lg"
                     >
                       Edit
                     </Link>
                     <Link
-                      href={"/dashboard/posts/" + post._id}
+                      href={"/dashboard/posts/delete/" + post._id}
                       className="btn btn-error bg-red-500 btn-md xl:btn-lg"
                     >
                       Delete
@@ -107,7 +108,6 @@ export default function Posts() {
           })}
         </div>
       )}
-      <Toaster position="bottom-right" />
     </>
   );
 }

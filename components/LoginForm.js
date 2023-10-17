@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useContext } from "react";
 import { AuthContext } from "@/utils/AuthContextProvider";
 import { useRouter } from "next/navigation";
@@ -105,7 +105,6 @@ export default function LoginForm() {
           </div>
         </div>
       </dialog>
-      <Toaster position="bottom-right" />
     </>
   );
 }
