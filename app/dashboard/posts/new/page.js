@@ -53,6 +53,11 @@ export default function NewPost() {
         setTimeout(() => router.push("/dashboard/posts"), 1000);
       }
     } catch (err) {
+      if (err.message === "jwt expired") {
+        context.dispatch({
+          type: "LOGOUT",
+        });
+      }
       toast.error(err.message);
     }
   };

@@ -13,7 +13,7 @@ export default function Page() {
     if (!context.user) {
       router.push("/");
     }
-  }, []);
+  }, [context.user]);
   return (
     <>
       {context.user && (

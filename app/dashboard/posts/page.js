@@ -16,8 +16,7 @@ export default function Posts() {
     if (!context.user) {
       router.push("/");
     }
-  }, []);
-
+  }, [context.user]);
   const formatDate = (date) => {
     const dateObject = new Date(date);
     return DateTime.fromJSDate(dateObject).toLocaleString(
@@ -42,6 +41,11 @@ export default function Posts() {
 
       setPosts(postData);
     } catch (error) {
+      if (error.message === "jwt expired") {
+        context.dispatch({
+          type: "LOGOUT",
+        });
+      }
       toast.error(error.message);
       setLoading(false);
     } finally {

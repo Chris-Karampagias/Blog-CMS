@@ -92,6 +92,11 @@ export default function Post() {
         setTimeout(() => router.push("/dashboard/posts"), 1000);
       }
     } catch (err) {
+      if (err.message === "jwt expired") {
+        context.dispatch({
+          type: "LOGOUT",
+        });
+      }
       setLoading(false);
       toast.error(err.message);
     } finally {
@@ -115,6 +120,11 @@ export default function Post() {
       }
       setPost(post);
     } catch (error) {
+      if (error.message === "jwt expired") {
+        context.dispatch({
+          type: "LOGOUT",
+        });
+      }
       setLoading(false);
       toast.error(error.message);
     } finally {

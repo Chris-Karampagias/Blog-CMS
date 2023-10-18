@@ -41,6 +41,11 @@ export default function DeletePost() {
         toast.success("Post deletion succesful");
       }
     } catch (error) {
+      if (error.message === "jwt expired") {
+        context.dispatch({
+          type: "LOGOUT",
+        });
+      }
       setLoading(false);
       toast.error(error.message);
     }
