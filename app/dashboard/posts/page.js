@@ -27,13 +27,18 @@ export default function Posts() {
   const getData = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/api/auth/posts", {
-        mode: "cors",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        "https://blog-api-production-a764.up.railway.app/api/auth/posts",
+        {
+          mode: "cors",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const postData = await res.json();
       if (!res.ok) {
         setLoading(false);
