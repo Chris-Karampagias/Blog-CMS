@@ -287,7 +287,7 @@ export default function Post() {
                       return (
                         <div
                           key={comment._id}
-                          className="carousel-item border-[1px] border-slate-300 rounded-2xl p-1 flex flex-col gap-3 h-4/5 md:h-3/5"
+                          className="carousel-item border-[1px] border-slate-300 rounded-2xl p-1 flex flex-col gap-3 h-4/5 "
                         >
                           <div className="flex flex-col md:flex-row items-center gap-3 md:justify-between">
                             <h1 className="md:w-1/2 text-xl self-start">
@@ -302,7 +302,7 @@ export default function Post() {
                           <h2 className="text-xl border-y-[1px] border-slate-500">
                             {comment.title}
                           </h2>
-                          <p className="carousel ml-2 h-[100px] overflow-y-auto text-xl">
+                          <p className="carousel ml-2 h-[150px] overflow-y-auto text-xl">
                             <span className="font-bold text-2xl mr-2">
                               &gt;
                             </span>
