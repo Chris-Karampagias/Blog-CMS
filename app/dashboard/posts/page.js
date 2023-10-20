@@ -121,7 +121,7 @@ export default function Posts() {
             </div>
           )}
           {posts.length === 0 && (
-            <div className="alert">
+            <div className="alert mt-20 w-[98%] mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
