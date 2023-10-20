@@ -78,10 +78,7 @@ export default function Posts() {
               >
                 <figure>
                   <Image
-                    src={
-                      "https://blog-api-production-a764.up.railway.app/" +
-                      post.image
-                    }
+                    src={`https://blog-api-production-a764.up.railway.app/${post.image}`}
                     width={600}
                     height={600}
                     alt="Post image"
