@@ -10,14 +10,17 @@ export default function LoginForm() {
   const context = useContext(AuthContext);
   const submitData = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/login", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
+      const res = await fetch(
+        "https://blog-api-production-a764.up.railway.app/api/login",
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.error);

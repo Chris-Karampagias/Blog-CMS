@@ -32,15 +32,20 @@ export default function NewPost() {
       data.append("description", post.description);
       data.append("image", post.image);
       setLoading(true);
-      const res = await fetch("http://localhost:4000/api/auth/posts/new", {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-          Accept: "application/json",
-        },
-        body: data,
-      });
+      const res = await fetch(
+        "https://blog-api-production-a764.up.railway.app/api/auth/posts/new",
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+            Accept: "application/json",
+          },
+          body: data,
+        }
+      );
       if (res.status === 413) {
         throw new Error("Image file size too large");
       }
