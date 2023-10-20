@@ -26,13 +26,18 @@ export default function DeletePost() {
   const deletePost = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:4000/api/posts/${postId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `http://localhost:4000/api/auth/posts/${postId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const result = await res.json();
       if (!res.ok) {
         setLoading(false);
@@ -54,12 +59,18 @@ export default function DeletePost() {
   const getPost = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:4000/api/posts/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `http://localhost:4000/api/auth/posts/${postId}`,
+        {
+          mode: "cors",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const post = await res.json();
       console.log(post);
       if (!res.ok) {

@@ -21,35 +21,14 @@ export default function Post() {
   const editorRef = useRef(null);
   const pathname = usePathname();
   const postId = pathname.split("/")[4];
+  const [commentToBeDeleted, setCommentToBeDeleted] = useState(null);
 
-  const date = new Date(Date.now());
-
-  const comments = [
-    {
-      _id: 1,
-      authorName: "Person 1",
-      title: "Title 1",
-      content:
-        "odales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam iaodales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam iaodales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam iaodales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam iaodales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam iaodales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam iaodales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam ia",
-      postedAt: DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_MED),
-    },
-    {
-      _id: 2,
-      authorName: "Person 2",
-      title: "Title 2",
-      content:
-        "odales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam ia",
-      postedAt: DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_MED),
-    },
-    {
-      _id: 3,
-      authorName: "Person 3",
-      title: "Title 3",
-      content:
-        "odales dolor. Fusce enim velit, consequat non arcu tincidunt, tincidunt aliquet enim. Aliquam ia",
-      postedAt: DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_MED),
-    },
-  ];
+  const formatDate = (date) => {
+    const dateObject = new Date(date);
+    return DateTime.fromJSDate(dateObject).toLocaleString(
+      DateTime.DATETIME_MED
+    );
+  };
 
   useEffect(() => {
     if (!context.user) {
@@ -59,6 +38,41 @@ export default function Post() {
 
   const handleFileInput = (e) => {
     setPost({ ...post, image: e.target.files[0] });
+  };
+
+  const deleteComment = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `http://localhost:4000/api/auth/posts/${post._id}/comments/${commentToBeDeleted}`,
+        {
+          method: "DELETE",
+          mode: "cors",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Server error");
+      }
+      const commentIndex = post.comments.findIndex(
+        (comment) => comment._id === commentToBeDeleted
+      );
+      post.comments.splice(commentIndex, 1);
+
+      setPost({
+        ...post,
+        comments: [...post.comments],
+      });
+      toast.success("Comment deletion succesful");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const uploadFiles = async () => {
@@ -71,14 +85,20 @@ export default function Post() {
       data.append("description", post.description);
       data.append("image", post.image);
       setLoading(true);
-      const res = await fetch(`http://localhost:4000/api/posts/${postId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-          Accept: "application/json",
-        },
-        body: data,
-      });
+      const res = await fetch(
+        `http://localhost:4000/api/auth/posts/${postId}`,
+        {
+          method: "PUT",
+          mode: "cors",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+            Accept: "application/json",
+          },
+          body: data,
+        }
+      );
       if (res.status === 413) {
         throw new Error("Image file size too large");
       }
@@ -107,13 +127,20 @@ export default function Post() {
   const getPost = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://localhost:4000/api/posts/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `http://localhost:4000/api/auth/posts/${postId}`,
+        {
+          mode: "cors",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const post = await res.json();
+      console.log(post);
       if (!res.ok) {
         setLoading(false);
         throw new Error(post.error);
@@ -147,7 +174,7 @@ export default function Post() {
               </h1>
               <form
                 id="post-form"
-                enctype="multipart/form-data"
+                encType="multipart/form-data"
                 className="flex flex-col justify-center items-center h-full space-y-20"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -234,39 +261,102 @@ export default function Post() {
             </h1>
             <div className="card-body overflow-y-hidden p-5">
               <div className="carousel carousel-vertical space-y-5 rounded-box">
-                {comments.map((comment) => {
-                  return (
-                    <div
-                      key={comment._id}
-                      className="carousel-item border-[1px] border-slate-300 rounded-2xl p-1 flex flex-col gap-3 h-4/5 md:h-3/5"
+                {post.comments.length === 0 && (
+                  <div className="alert">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      className="stroke-info shrink-0 w-6 h-6"
                     >
-                      <div className="flex flex-col md:flex-row items-center gap-3 md:justify-between">
-                        <h1 className="md:w-1/2 text-xl self-start">
-                          <span className="font-bold">@</span>
-                          {comment.authorName}
-                        </h1>
-                        <p className="text-slate-500 w-fit text-start md:text-end">
-                          <span className="font-bold">Posted: </span>
-                          {comment.postedAt}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <span className="text-lg md:text-2xl">
+                      No comments yet!
+                    </span>
+                  </div>
+                )}
+                {post.comments.length > 0 && (
+                  <>
+                    {post.comments.map((comment) => {
+                      return (
+                        <div
+                          key={comment._id}
+                          className="carousel-item border-[1px] border-slate-300 rounded-2xl p-1 flex flex-col gap-3 h-4/5 md:h-3/5"
+                        >
+                          <div className="flex flex-col md:flex-row items-center gap-3 md:justify-between">
+                            <h1 className="md:w-1/2 text-xl self-start">
+                              <span className="font-bold">@</span>
+                              {comment.authorName}
+                            </h1>
+                            <p className="text-slate-500 w-fit text-start md:text-end">
+                              <span className="font-bold">Posted: </span>
+                              {formatDate(comment.postedAt)}
+                            </p>
+                          </div>
+                          <h2 className="text-xl border-y-[1px] border-slate-500">
+                            {comment.title}
+                          </h2>
+                          <p className="carousel ml-2 h-[100px] overflow-y-auto text-xl">
+                            <span className="font-bold text-2xl mr-2">
+                              &gt;
+                            </span>
+                            {comment.content}
+                          </p>
+                          <div className="w-full flex justify-end">
+                            <button
+                              className="cursor-pointer transition-all duration-200 hover:scale-105 "
+                              data-id={comment._id}
+                              onClick={(e) => {
+                                document
+                                  .getElementById("my_modal_2")
+                                  .showModal();
+                                setCommentToBeDeleted(
+                                  e.target.getAttribute("data-id")
+                                );
+                              }}
+                            >
+                              <Icon
+                                path={mdiDelete}
+                                size={1.5}
+                                className="text-red-500 pointer-events-none"
+                              />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <dialog id="my_modal_2" className="modal ">
+                      <div className="modal-box flex flex-col gap-3">
+                        <p className="py-4 md:text-2xl">
+                          Are you sure you want to delete this comment?
                         </p>
+                        <span className="font-bold md:text-xl text-red-500">
+                          This action is irreversible!
+                        </span>
+                        <button
+                          className="btn btn-error w-fit p-2 self-end bg-red-500 btn-md"
+                          onClick={async () => {
+                            document.getElementById("my_modal_2").close();
+                            await deleteComment(commentToBeDeleted);
+                          }}
+                        >
+                          Delete
+                        </button>
                       </div>
-                      <h2 className="text-xl border-y-[1px] border-slate-500">
-                        {comment.title}
-                      </h2>
-                      <p className="carousel ml-2 h-[100px] overflow-y-auto text-xl">
-                        <span className="font-bold text-2xl mr-2">&gt;</span>
-                        {comment.content}
-                      </p>
-                      <div className="w-full flex justify-end">
-                        <Icon
-                          path={mdiDelete}
-                          size={1.5}
-                          className="text-red-500"
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                      <form method="dialog" className="modal-backdrop">
+                        <button onClick={() => setCommentToBeDeleted(null)}>
+                          close
+                        </button>
+                      </form>
+                    </dialog>
+                  </>
+                )}
               </div>
             </div>
           </div>

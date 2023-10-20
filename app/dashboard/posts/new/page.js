@@ -32,8 +32,9 @@ export default function NewPost() {
       data.append("description", post.description);
       data.append("image", post.image);
       setLoading(true);
-      const res = await fetch("http://localhost:4000/api/posts/new", {
+      const res = await fetch("http://localhost:4000/api/auth/posts/new", {
         method: "POST",
+        mode: "cors",
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
           Accept: "application/json",

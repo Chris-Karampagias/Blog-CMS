@@ -27,7 +27,8 @@ export default function Posts() {
   const getData = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/api/posts", {
+      const res = await fetch("http://localhost:4000/api/auth/posts", {
+        mode: "cors",
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
           "Content-Type": "application/json",
