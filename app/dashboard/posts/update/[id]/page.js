@@ -200,7 +200,7 @@ export default function Post() {
                     className="text-xl w-full"
                     apiKey={process.env.TINYMCE_KEY}
                     onInit={(evt, editor) => (editorRef.current = editor)}
-                    initialValue={post.description}
+                    initialValue={""}
                     init={{
                       height: 300,
                       menubar: false,
@@ -220,9 +220,7 @@ export default function Post() {
                     onEditorChange={() => {
                       setPost({
                         ...post,
-                        description: editorRef.current
-                          .getContent()
-                          .replace(/<\/?p>/g, ""),
+                        description: editorRef.current.getContent(),
                       });
                     }}
                   />
