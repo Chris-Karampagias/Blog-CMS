@@ -27,7 +27,7 @@ export default function DeletePost() {
     try {
       setLoading(true);
       const res = await fetch(
-        `https://blog-api-production-a764.up.railway.app/api/auth/posts/${postId}`,
+        `http://localhost:4000/api/auth/posts/${postId}`,
         {
           method: "DELETE",
           headers: {
@@ -60,7 +60,7 @@ export default function DeletePost() {
     try {
       setLoading(true);
       const res = await fetch(
-        `https://blog-api-production-a764.up.railway.app/api/auth/posts/${postId}`,
+        `http://localhost:4000/api/auth/posts/${postId}`,
         {
           mode: "cors",
           headers: {

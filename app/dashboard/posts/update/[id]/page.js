@@ -44,7 +44,7 @@ export default function Post() {
     try {
       setLoading(true);
       const res = await fetch(
-        `https://blog-api-production-a764.up.railway.app/api/auth/posts/${post._id}/comments/${commentToBeDeleted}`,
+        `http://localhost:4000/api/auth/posts/${post._id}/comments/${commentToBeDeleted}`,
         {
           method: "DELETE",
           mode: "cors",
@@ -86,7 +86,7 @@ export default function Post() {
       data.append("image", post.image);
       setLoading(true);
       const res = await fetch(
-        `https://blog-api-production-a764.up.railway.app/api/auth/posts/${postId}`,
+        `http://localhost:4000/api/auth/posts/${postId}`,
         {
           method: "PUT",
           mode: "cors",
@@ -128,7 +128,7 @@ export default function Post() {
     try {
       setLoading(true);
       const res = await fetch(
-        `https://blog-api-production-a764.up.railway.app/api/auth/posts/${postId}`,
+        `http://localhost:4000/api/auth/posts/${postId}`,
         {
           mode: "cors",
           headers: {

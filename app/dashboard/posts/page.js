@@ -27,18 +27,13 @@ export default function Posts() {
   const getData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        "https://blog-api-production-a764.up.railway.app/api/auth/posts",
-        {
-          mode: "cors",
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch("http://localhost:4000/api/auth/posts", {
+        mode: "cors",
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+          "Content-Type": "application/json",
+        },
+      });
       const postData = await res.json();
       if (!res.ok) {
         setLoading(false);
@@ -80,7 +75,7 @@ export default function Posts() {
                   >
                     <figure>
                       <Image
-                        src={`https://blog-api-production-a764.up.railway.app/${post.image}`}
+                        src={`http://localhost:4000/${post.image}`}
                         width={600}
                         height={600}
                         alt="Post image"
