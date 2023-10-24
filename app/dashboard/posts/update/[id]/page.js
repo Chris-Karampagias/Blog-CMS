@@ -16,6 +16,8 @@ export default function Post() {
     comments: [],
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(false);
   const router = useRouter();
   const context = useContext(AuthContext);
   const editorRef = useRef(null);
@@ -42,7 +44,7 @@ export default function Post() {
 
   const deleteComment = async () => {
     try {
-      setLoading(true);
+      setCommentLoading(true);
       const res = await fetch(
         `https://blog-api-production-a764.up.railway.app/api/auth/posts/${post._id}/comments/${commentToBeDeleted}`,
         {
@@ -69,9 +71,15 @@ export default function Post() {
       });
       toast.success("Comment deletion succesful");
     } catch (err) {
+      setError(true);
+      if (error.message === "jwt expired") {
+        context.dispatch({
+          type: "LOGOUT",
+        });
+      }
       toast.error(err.message);
     } finally {
-      setLoading(false);
+      setCommentLoading(false);
     }
   };
 
@@ -112,15 +120,15 @@ export default function Post() {
         setTimeout(() => router.push("/dashboard/posts"), 1000);
       }
     } catch (err) {
+      setError(true);
       if (err.message === "jwt expired") {
         context.dispatch({
           type: "LOGOUT",
         });
       }
-      setLoading(false);
       toast.error(err.message);
     } finally {
-      setTimeout(() => setLoading(false), 1000);
+      setTimeout(() => setLoading(false), 1100);
     }
   };
 
@@ -147,12 +155,12 @@ export default function Post() {
       }
       setPost(post);
     } catch (error) {
+      setError(true);
       if (error.message === "jwt expired") {
         context.dispatch({
           type: "LOGOUT",
         });
       }
-      setLoading(false);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -165,7 +173,32 @@ export default function Post() {
 
   return (
     <>
-      {context.user && (
+      {context.user && error && !loading && (
+        <div className="alert alert-error w-[98%] mx-auto mt-20 md:text-2xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>
+            There was an error with your request.
+            <br />
+            Please try again later!
+          </span>
+        </div>
+      )}
+      {context.user && loading && !error && (
+        <span className="loading loading-spinner absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] loading-lg "></span>
+      )}
+      {context.user && !loading && !error && (
         <div className="flex flex-col sm:flex-row gap-10">
           <div className="card w-4/5 md:w-1/3 mx-auto h-1/3 my-10 bg-base-100 shadow-2xl">
             <div className="card-body p-4">
@@ -198,7 +231,7 @@ export default function Post() {
                 <div className="w-full flex justify-center">
                   <Editor
                     className="text-xl w-full"
-                    apiKey={process.env.TINYMCE_KEY}
+                    apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
                     onInit={(evt, editor) => (editorRef.current = editor)}
                     initialValue={""}
                     init={{
@@ -242,14 +275,7 @@ export default function Post() {
                     className="file-input file-input-bordered file-input-secondary w-full max-w-md"
                   />
                 </div>
-                <button
-                  className={
-                    !loading ? "btn btn-accent" : "btn btn-accent btn-disabled"
-                  }
-                >
-                  {loading && <span className="loading loading-spinner"></span>}
-                  Update post
-                </button>
+                <button className="btn btn-accent">Update post</button>
               </form>
             </div>
           </div>
@@ -259,7 +285,10 @@ export default function Post() {
             </h1>
             <div className="card-body overflow-y-hidden p-5">
               <div className="carousel carousel-vertical space-y-5 rounded-box">
-                {post.comments.length === 0 && (
+                {commentLoading && (
+                  <span className="loading mx-auto mt-10 loading-spinner loading-lg"></span>
+                )}
+                {post.comments.length === 0 && !commentLoading && (
                   <div className="alert">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +308,7 @@ export default function Post() {
                     </span>
                   </div>
                 )}
-                {post.comments.length > 0 && (
+                {post.comments.length > 0 && !commentLoading && (
                   <>
                     {post.comments.map((comment) => {
                       return (
