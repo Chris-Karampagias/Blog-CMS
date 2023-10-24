@@ -8,9 +8,9 @@ export default function Home() {
   const context = useContext(AuthContext);
   useEffect(() => {
     if (context.user) {
-      router.push("https://blog-cms-delta-peach.vercel.app/dashboard");
+      router.push("dashboard");
     }
-  }, []);
+  }, [context.user]);
   return (
     <>
       {!context.user && (
