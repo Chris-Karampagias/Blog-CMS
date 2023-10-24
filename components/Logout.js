@@ -13,7 +13,6 @@ export default function Logout() {
     context.dispatch({
       type: "LOGOUT",
     });
-    localStorage.clear();
     router.push("/");
   };
   return (

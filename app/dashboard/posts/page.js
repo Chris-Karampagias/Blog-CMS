@@ -12,6 +12,7 @@ export default function Posts() {
   const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   useEffect(() => {
     if (!context.user) {
       router.push("/");
@@ -36,19 +37,18 @@ export default function Posts() {
       });
       const postData = await res.json();
       if (!res.ok) {
-        setLoading(false);
         throw new Error(postData.error);
       }
 
       setPosts(postData);
     } catch (error) {
+      setError(true);
       if (error.message === "jwt expired") {
         context.dispatch({
           type: "LOGOUT",
         });
       }
       toast.error(error.message);
-      setLoading(false);
     } finally {
       setTimeout(() => setLoading(false), 500);
     }
@@ -59,11 +59,32 @@ export default function Posts() {
   }, []);
   return (
     <>
-      {" "}
+      {context.user && error && !loading && (
+        <div className="alert alert-error w-[98%] mx-auto mt-20 md:text-2xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>
+            There was an error with your request.
+            <br />
+            Please try again later!
+          </span>
+        </div>
+      )}
       {context.user && loading && (
         <span className="loading loading-spinner absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] loading-lg "></span>
       )}
-      {context.user && !loading && (
+      {context.user && !loading && !error && (
         <>
           {posts.length > 0 && (
             <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 min-[2500px]:grid-cols-3 justify-items-center gap-10 gap-y-28  mt-10 p-10 min-h-screen">
