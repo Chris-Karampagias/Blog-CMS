@@ -153,9 +153,7 @@ export default function NewPost() {
                   onEditorChange={() => {
                     setPost({
                       ...post,
-                      description: editorRef.current
-                        .getContent()
-                        .replace(/<\/?p>/g, ""),
+                      description: editorRef.current.getContent(),
                     });
                   }}
                 />
