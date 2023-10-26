@@ -131,7 +131,7 @@ export default function NewPost() {
               <div className="w-full flex justify-center">
                 <Editor
                   className="text-xl w-full"
-                  apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
+                  apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue="Enter your post's description here..."
                   init={{

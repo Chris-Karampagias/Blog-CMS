@@ -76,7 +76,6 @@ export default function DeletePost() {
         }
       );
       const post = await res.json();
-      console.log(post);
       if (!res.ok) {
         throw new Error(post.error);
       }
