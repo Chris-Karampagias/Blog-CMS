@@ -239,7 +239,7 @@ export default function Post() {
                     className="text-xl w-full"
                     apiKey={process.env.NEXT_PUBLIC_TINYMCE_KEY}
                     onInit={(evt, editor) => (editorRef.current = editor)}
-                    initialValue={""}
+                    initialValue={post.description}
                     init={{
                       height: 300,
                       menubar: false,
