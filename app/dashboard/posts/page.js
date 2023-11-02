@@ -1,23 +1,50 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "@/utils/AuthContextProvider";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { DateTime } from "luxon";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Posts() {
   const context = useContext(AuthContext);
   const router = useRouter();
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  useEffect(() => {
-    if (!context.user) {
-      router.push("/");
-    }
-  }, [context.user]);
+
+  const getData = () => {
+    return fetch(
+      "https://blog-api-production-a764.up.railway.app/api/auth/posts",
+      {
+        mode: "cors",
+        headers: {
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Server error");
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        if (error.message === "jwt expired") {
+          context.dispatch({
+            type: "LOGOUT",
+          });
+        }
+        toast.error(error.message);
+        throw new Error(error.message);
+      });
+  };
+
+  const postsQuery = useQuery({
+    queryKey: ["posts"],
+    queryFn: getData,
+  });
+
   const formatDate = (date) => {
     const dateObject = new Date(date);
     return DateTime.fromJSDate(dateObject).toLocaleString(
@@ -25,46 +52,9 @@ export default function Posts() {
     );
   };
 
-  const getData = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        "https://blog-api-production-a764.up.railway.app/api/auth/posts",
-        {
-          mode: "cors",
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const postData = await res.json();
-      if (!res.ok) {
-        throw new Error(postData.error);
-      }
-
-      setPosts(postData);
-    } catch (error) {
-      setError(true);
-      if (error.message === "jwt expired") {
-        context.dispatch({
-          type: "LOGOUT",
-        });
-      }
-      toast.error(error.message);
-    } finally {
-      setTimeout(() => setLoading(false), 500);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
   return (
     <>
-      {context.user && error && !loading && (
+      {postsQuery.isError && (
         <div className="alert alert-error w-[98%] mx-auto mt-20 md:text-2xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -80,20 +70,20 @@ export default function Posts() {
             />
           </svg>
           <span>
-            There was an error with your request.
-            <br />
-            Please try again later!
+            <p>There was an error with your request.</p>
+            <p className="font-bold">{postsQuery.error.message}</p>
+            <p>Please try again later!</p>
           </span>
         </div>
       )}
-      {context.user && loading && (
+      {postsQuery.isPending && (
         <span className="loading loading-spinner absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] loading-lg "></span>
       )}
-      {context.user && !loading && !error && (
+      {postsQuery.isSuccess && (
         <>
-          {posts.length > 0 && (
+          {postsQuery.data.length > 0 && (
             <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-2 min-[2500px]:grid-cols-3 justify-items-center gap-10 gap-y-28  mt-10 p-10 min-h-screen">
-              {posts.map((post) => {
+              {postsQuery.data.map((post) => {
                 return (
                   <div
                     key={post._id}
@@ -141,7 +131,7 @@ export default function Posts() {
               })}
             </div>
           )}
-          {posts.length === 0 && (
+          {postsQuery.data.length === 0 && (
             <div className="alert mt-20 w-[98%] mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
